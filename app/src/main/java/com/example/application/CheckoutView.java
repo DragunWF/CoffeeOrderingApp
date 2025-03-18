@@ -1,5 +1,6 @@
 package com.example.application;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import com.example.application.helpers.SessionData;
 import com.example.application.helpers.Utils;
 
 public class CheckoutView extends AppCompatActivity {
+    public static final String TOTAL_PRICE = "totalPrice";
     public static final String IS_BUY_NOW = "isBuyNowView";
 
     private ImageView returnImageBtn;
@@ -53,20 +55,22 @@ public class CheckoutView extends AppCompatActivity {
         confirmBtn = findViewById(R.id.confirmBtn);
     }
 
+    @SuppressLint("SetTextI18n")
     private void setData() {
         orderNumberText.setText(String.valueOf((int) Math.floor(Math.random() * 99999)));
         totalCoffeeNumberText.setText(String.valueOf(SessionData.getCart().size()));
 
+        double totalPrice;
         if (isBuyNowView) {
-            double totalPrice = getIntent().getDoubleExtra("totalPrice", 0);
-            totalPriceText.setText(totalPrice + " PHP");
+            totalPrice = getIntent().getDoubleExtra(CheckoutView.TOTAL_PRICE, 0);
         } else {
-            double totalPrice = 0;
+            totalPrice = 0;
             for (CartItem item : SessionData.getCart()) {
                 totalPrice += item.getTotalPrice();
             }
-            totalPriceText.setText(totalPrice + " PHP");
         }
+
+        totalPriceText.setText(totalPrice + " PHP");
     }
 
     private void setButtons(){

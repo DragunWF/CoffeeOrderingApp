@@ -90,7 +90,7 @@ public class ViewActivity extends AppCompatActivity {
         buyBtn.setOnClickListener(v ->{
             Intent intent = new Intent(ViewActivity.this, CheckoutView.class);
             intent.putExtra(CheckoutView.IS_BUY_NOW, true);
-            intent.putExtra("totalPrice", viewedCoffee.getPrice() * currentQuantity);
+            intent.putExtra(CheckoutView.TOTAL_PRICE, viewedCoffee.getPrice() * currentQuantity);
             startActivity(intent);
         });
         addToCartBtn.setOnClickListener(v ->{
