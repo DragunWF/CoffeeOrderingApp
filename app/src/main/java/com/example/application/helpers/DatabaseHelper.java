@@ -53,5 +53,6 @@ public class DatabaseHelper {
 
     public static void clear() {
         coffeeBank.clear();
+        cartBank.clear();
     }
 }
