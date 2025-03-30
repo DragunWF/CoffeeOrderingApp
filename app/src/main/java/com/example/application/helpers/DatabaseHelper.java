@@ -3,6 +3,7 @@ package com.example.application.helpers;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.example.application.data.CartItem;
 import com.example.application.data.Coffee;
 import com.example.application.services.CartService;
 import com.example.application.services.CoffeeService;
@@ -14,15 +15,21 @@ public class DatabaseHelper {
     private static SharedPreferences.Editor editor;
 
     private static ModelBank<Coffee> coffeeBank;
+    private static ModelBank<CartItem> cartBank;
 
     public static void initialize(Context context) {
         sharedPref = context.getSharedPreferences(FILE_KEY, Context.MODE_PRIVATE);
         editor = sharedPref.edit();
         coffeeBank = new ModelBank<>(sharedPref, editor, "coffees", Coffee.class);
+        cartBank = new ModelBank<>(sharedPref, editor, "cart", CartItem.class);
     }
 
     public static ModelBank<Coffee> getCoffeeBank() {
         return coffeeBank;
+    }
+
+    public static ModelBank<CartItem> getCartBank() {
+        return cartBank;
     }
 
     public static void addDummyData() {
@@ -40,7 +47,7 @@ public class DatabaseHelper {
             Coffee preCartCoffee = new Coffee("Breve", "Latte made with half-and-half", "Hot Brew", 85);
             CoffeeService.add(preCartCoffee);
 
-            CartService.add(preCartCoffee);
+            // CartService.add(preCartCoffee);
         }
     }
 

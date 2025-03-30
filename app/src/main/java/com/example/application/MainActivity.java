@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             DatabaseHelper.initialize(this);
-            DatabaseHelper.clear();
             DatabaseHelper.addDummyData();
 
             bindElements();
@@ -84,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         coffeeRecycler.setHasFixedSize(false);
 
         coffeeAdapter = new CoffeeAdapter(DatabaseHelper.getCoffeeBank().getAll(), this);
+        System.out.println(coffeeAdapter);
         coffeeRecycler.setAdapter(coffeeAdapter);
 
         coffeeLayoutManager = new LinearLayoutManager(this);

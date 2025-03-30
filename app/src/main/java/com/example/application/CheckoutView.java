@@ -1,20 +1,25 @@
 package com.example.application;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.application.data.CartItem;
-import com.example.application.helpers.SessionData;
+import com.example.application.helpers.DatabaseHelper;
 import com.example.application.helpers.Utils;
+import com.example.application.services.CartService;
+
+import java.util.List;
 
 public class CheckoutView extends AppCompatActivity {
     public static final String TOTAL_PRICE = "totalPrice";
@@ -57,15 +62,17 @@ public class CheckoutView extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private void setData() {
+        List<CartItem> cartItemList = DatabaseHelper.getCartBank().getAll();
+
         orderNumberText.setText(String.valueOf((int) Math.floor(Math.random() * 99999)));
-        totalCoffeeNumberText.setText(String.valueOf(SessionData.getCart().size()));
+        totalCoffeeNumberText.setText(String.valueOf(cartItemList.size()));
 
         double totalPrice;
         if (isBuyNowView) {
             totalPrice = getIntent().getDoubleExtra(CheckoutView.TOTAL_PRICE, 0);
         } else {
             totalPrice = 0;
-            for (CartItem item : SessionData.getCart()) {
+            for (CartItem item : cartItemList) {
                 totalPrice += item.getTotalPrice();
             }
         }
@@ -78,8 +85,25 @@ public class CheckoutView extends AppCompatActivity {
             finish();
         });
         confirmBtn.setOnClickListener(v ->{
-            Utils.longToast("Your order has been successfully confirmed", CheckoutView.this);
-            finish();
+            AlertDialog.Builder builder = new AlertDialog.Builder(CheckoutView.this);
+
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    Utils.longToast("Your order has been successfully confirmed", CheckoutView.this);
+                    CartService.clear();
+                    finish();
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    // User cancels the dialog.
+                }
+            });
+            builder.setTitle("Confirmation Dialog");
+            builder.setMessage("Are you sure you want to confirm this order? This will clear your current cart!");
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
         });
     }
 }

@@ -1,5 +1,6 @@
 package com.example.application.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.application.R;
 import com.example.application.data.CartItem;
 import com.example.application.data.Coffee;
-import com.example.application.helpers.SessionData;
+import com.example.application.helpers.DatabaseHelper;
 import com.example.application.services.CartService;
 
 import java.util.List;
@@ -85,6 +86,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
     }
 
     // Replace the contents of a view (invoked by the layout manager)
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
 
@@ -99,21 +101,22 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.ViewHolder> {
         viewHolder.getQuantityText().setText(String.valueOf(cartItem.getQuantity()));
         viewHolder.getAddBtn().setOnClickListener(v -> {
             cartItem.addQuantity();
-            notifyDataSetChanged();
+            CartService.update(cartItem);
+            updateDataSet();
         });
         viewHolder.getSubtractBtn().setOnClickListener(v -> {
             cartItem.subtractQuantity();
             if (cartItem.getQuantity() <= 0) {
                 CartService.remove(cartItem.getId());
-                updateDataSet(SessionData.getCart());
-                return;
+            } else {
+                CartService.update(cartItem);
             }
-            notifyDataSetChanged();
+            updateDataSet();
         });
     }
 
     public void updateDataSet() {
-        List<CartItem> itemList = SessionData.getCart();
+        List<CartItem> itemList = DatabaseHelper.getCartBank().getAll();
         updateDataSet(itemList);
     }
 

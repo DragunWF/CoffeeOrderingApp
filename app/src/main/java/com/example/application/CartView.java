@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.application.adapters.CartAdapter;
 import com.example.application.helpers.DatabaseHelper;
-import com.example.application.helpers.SessionData;
 import com.example.application.helpers.Utils;
 
 public class CartView extends AppCompatActivity {
@@ -25,6 +24,12 @@ public class CartView extends AppCompatActivity {
 
     private ImageView backImageBtn;
     private Button checkouBtn;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        cartAdapter.updateDataSet();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +73,7 @@ public class CartView extends AppCompatActivity {
     private void setRecycler() {
         cartRecycler.setHasFixedSize(false);
 
-        cartAdapter = new CartAdapter(SessionData.getCart(), this);
+        cartAdapter = new CartAdapter(DatabaseHelper.getCartBank().getAll(), this);
         cartRecycler.setAdapter(cartAdapter);
 
         cartLayoutManager = new LinearLayoutManager(this);
